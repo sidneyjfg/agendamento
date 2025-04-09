@@ -22,7 +22,7 @@ describe('Auth Routes', () => {
         phone: '1234567890',
         role: 'PROFESSIONAL',
         slugPublicId: 'test-user',
-        planId: '85ac1000-5512-4a7f-bde4-d4092a0b5ce2',
+        planId: 'f7323647-cd2a-4a8d-a27e-02a755fd39ff',
       });
 
     expect(response.status).toBe(201);
@@ -40,7 +40,7 @@ describe('Auth Routes', () => {
         phone: '1234567890',
         role: 'PROFESSIONAL',
         slugPublicId: 'test-user',
-        planId: '85ac1000-5512-4a7f-bde4-d4092a0b5ce2',
+        planId: 'f7323647-cd2a-4a8d-a27e-02a755fd39ff',
       });
 
     expect(response.status).toBe(400); // Verifica se o status é 400
