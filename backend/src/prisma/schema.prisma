@@ -1,0 +1,206 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum PlanType {
+  FREE
+  PREMIUM
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model User {
+  id               String   @id @default(uuid())
+  name             String
+  email            String   @unique
+  passwordHash     String
+  phone            String
+  role             Role     @default(PROFESSIONAL)
+  brandName        String?
+  logoUrl          String?
+  slugPublicId     String   @unique
+  planId           String
+  plan             Plan?    @relation(fields: [planId], references: [id])
+  stripeCustomerId String?  @unique
+  status           UserStatus @default(ACTIVE)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  services       Service[]
+  customers      Customer[]
+  availabilities Availability[]
+  appointments   Appointment[]
+  notifications  Notification[]
+  subscriptions  Subscription[]
+  supportTickets SupportTicket[]
+}
+
+model Plan {
+  id              String   @id @default(uuid())
+  name            String   @unique
+  type            PlanType
+  price           Float
+  stripePriceId   String?
+  maxAppointments Int
+  allowWhatsapp   Boolean  @default(false)
+  allowCustomLink Boolean  @default(false)
+  allowCustomLogo Boolean  @default(false)
+  supportPriority Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  users         User[]
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id                   String             @id @default(uuid())
+  userId               String
+  planId               String
+  status               SubscriptionStatus
+  stripeSubscriptionId String?            @unique
+  paymentMethod        String?
+  startDate            DateTime
+  endDate              DateTime
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+  plan Plan @relation(fields: [planId], references: [id])
+}
+
+model Service {
+  id           String        @id @default(uuid())
+  name         String
+  description  String?
+  price        Float
+  duration     Int // duração em minutos
+  userId       String
+  user         User          @relation(fields: [userId], references: [id])
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  isActive     Boolean       @default(true)
+  category     String? // ex: "Corte", "Manicure", "Depilação", etc.
+  appointments Appointment[]
+
+  @@index([userId])
+}
+
+model Customer {
+  id               String  @id @default(uuid())
+  userId           String
+  name             String
+  phone            String
+  email            String?
+  stripeCustomerId String? @unique
+
+  user         User          @relation(fields: [userId], references: [id])
+  appointments Appointment[]
+}
+
+model Availability {
+  id        String  @id @default(uuid())
+  userId    String
+  weekday   Weekday
+  startTime String // TIME as string (e.g., "09:00")
+  endTime   String // TIME as string (e.g., "18:00")
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Appointment {
+  id                    String            @id @default(uuid())
+  customerId            String
+  serviceId             String
+  userId                String
+  date                  DateTime
+  status                AppointmentStatus
+  price                 Float
+  stripePaymentIntentId String?           @unique
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+
+  customer Customer @relation(fields: [customerId], references: [id])
+  service  Service  @relation(fields: [serviceId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+}
+
+model Notification {
+  id        String             @id @default(uuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  status    NotificationStatus
+  readAt    DateTime?
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model SupportTicket {
+  id          String   @id @default(uuid())
+  userId      String
+  message     String
+  status      TicketStatus @default(PENDING)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+enum TicketStatus {
+  PENDING
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum Role {
+  ADMIN
+  PROFESSIONAL
+}
+
+enum Weekday {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  PAST_DUE
+  TRIALING
+}
+
+enum NotificationType {
+  APPOINTMENT
+  PAYMENT
+  SYSTEM
+}
+
+enum NotificationStatus {
+  UNREAD
+  READ
+}

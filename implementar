@@ -1,0 +1,79 @@
+/**
+ * Gere um backend completo em JavaScript (Node.js) usando Express e Prisma com base no schema fornecido de um SaaS de agendamentos.
+ * 
+ * 🎯 Objetivo:
+ * Sistema de agendamento online com rotas públicas para o cliente final e áreas privadas para o profissional e o administrador do SaaS.
+ * Inclui controle de planos, Stripe, notificações por WhatsApp, e painel administrativo com estatísticas.
+ * 
+ * ✅ Tec stack:
+ * - Node.js com Express.js
+ * - Prisma (MySQL)
+ * - JWT para autenticação (roles: ADMIN, PROFESSIONAL)
+ * - bcrypt para senhas
+ * - Cors + Helmet
+ * - dotenv
+ * - node-cron ou Agenda.js para notificações automáticas
+ * - Stripe SDK para planos pagos
+ * - Integração via link `wa.me` ou API WhatsApp (configurável)
+
+ * 📂 Organização:
+ * - Rotas separadas por role: /auth, /admin, /professional, /public
+ * - Controllers, services, repositories e middlewares bem definidos
+ * - Metodologias SOLID e codigo limpo
+ * - Código todo em português
+ * 
+ * 🧑‍💼 ADMIN:
+ * - POST /auth/login (com verificação de role === 'ADMIN')
+ * - GET /admin/users → lista todos os usuários (nome, plano, status, criadoEm)
+ * - GET /admin/messages → lista chamados abertos por profissionais
+ * - GET /admin/statistics → dashboard com:
+ *    - total de usuários
+ *    - usuários ativos/inativos
+ *    - quantidade de agendamentos
+ *    - faturamento total (baseado em subscriptions ativas)
+ *    - planos mais usados
+ *    - chamados abertos e respondidos
+ * - GET /admin/revenue → relatório detalhado de ganhos com Stripe (mensal e anual)
+ * 
+ * 💇‍♂️ PROFESSIONAL:
+ * - POST /auth/register
+ * - POST /auth/login
+ * - GET /professional/me
+ * - PUT /professional/settings
+ * - CRUD /professional/services
+ * - CRUD /professional/availabilities
+ * - GET /professional/appointments?status=
+ * - GET /professional/customers → listar clientes que já agendaram
+ * - POST /professional/support → abrir chamado para o admin
+
+ * 📦 Planos & Assinaturas:
+ * - GET /plans
+ * - POST /subscribe/:planId → cria nova subscription com Stripe
+ * - Middleware: cada rota relevante verifica se plano do user permite a ação
+ *     - FREE: limite de agendamentos, sem WhatsApp, sem link personalizado
+ *     - PREMIUM: acesso total
+
+ * 📄 CLIENTES:
+ * - GET /professional/customers → clientes do profissional
+ * - Cada agendamento público faz pré-cadastro do cliente com nome + telefone + e-mail (opcional)
+ * - Evita duplicação por telefone
+ * - Associado ao `userId` do profissional
+
+ * 🔓 ROTAS PÚBLICAS:
+ * - GET /public/:slugPublicId/services → lista serviços disponíveis
+ * - GET /public/:slugPublicId/availability → horários disponíveis
+ * - POST /public/:slugPublicId/book → cria agendamento + cadastro do cliente
+ * - Retorna link do WhatsApp para o cliente confirmar/responder
+
+ * 🔔 NOTIFICAÇÕES:
+ * - node-cron: rota executada diariamente para buscar agendamentos do dia seguinte e enviar lembrete por WhatsApp
+ * - GET /notifications/reminder (executado pelo cron)
+ * 
+ * ⚠️ Especificações:
+ * - Backend somente em JavaScript (sem TypeScript)
+ * - Código limpo, dividido por pastas (routes, controllers, services, prisma, middlewares)
+ * - Utilizar Stripe com segurança para assinaturas
+ * - Middleware de autenticação por token JWT + role
+ * - Token expira e precisa de refresh
+ * - Validação em todas as rotas que recebem dados
+ */
