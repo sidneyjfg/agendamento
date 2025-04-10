@@ -1,18 +1,21 @@
+// frontend/src/pages/Register.jsx
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Scissors, Mail, Lock, User, Phone, Calendar } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Scissors, Mail, Lock, User, Phone } from 'lucide-react';
+import { register } from '../api/authService'; // Importando o serviço de autenticação
 
 function ProRegister() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    birthdate: '',
     password: '',
     confirmPassword: '',
   });
+  const [error, setError] = useState(null); // Para armazenar mensagens de erro
+  const navigate = useNavigate(); // Para redirecionar após o registro
 
-  const handleChange = () => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -20,10 +23,33 @@ function ProRegister() {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle registration logic here
-    console.log('Registration attempt:', formData);
+    setError(null); // Limpa erros anteriores
+
+    // Validação simples
+    if (formData.password !== formData.confirmPassword) {
+      setError('As senhas não coincidem.');
+      return;
+    }
+
+    try {
+      // Chama o serviço de registro
+      const response = await register({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password,
+      });
+      console.log('data User:', response.user);
+      if (response.status === 201) {
+        console.log("Registro bem-sucedido");
+        navigate('/login');
+      }
+    } catch (error) {
+      setError('Erro ao registrar. Tente novamente.'); // Define a mensagem de erro
+      console.error('Registration error:', error);
+    }
   };
 
   return (
@@ -37,11 +63,13 @@ function ProRegister() {
           </div>
           <h2 className="text-2xl font-bold text-gray-800 mb-2">Criar nova conta</h2>
           <p className="text-gray-600">Preencha seus dados para começar</p>
+          {error && <p className="text-red-500">{error}</p>} {/* Exibe mensagem de erro */}
         </div>
 
         {/* Registration Form */}
         <form onSubmit={handleSubmit} className="p-8">
           <div className="space-y-6">
+            {/* Nome */}
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
                 Nome completo
@@ -63,6 +91,7 @@ function ProRegister() {
               </div>
             </div>
 
+            {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                 Email
@@ -84,6 +113,7 @@ function ProRegister() {
               </div>
             </div>
 
+            {/* Telefone */}
             <div>
               <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
                 Telefone
@@ -105,26 +135,7 @@ function ProRegister() {
               </div>
             </div>
 
-            <div>
-              <label htmlFor="birthdate" className="block text-sm font-medium text-gray-700 mb-2">
-                Data de nascimento
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Calendar className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  id="birthdate"
-                  name="birthdate"
-                  type="date"
-                  value={formData.birthdate}
-                  onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                  required
-                />
-              </div>
-            </div>
-
+            {/* Senha */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                 Senha
@@ -146,6 +157,7 @@ function ProRegister() {
               </div>
             </div>
 
+            {/* Confirmar Senha */}
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
                 Confirmar senha

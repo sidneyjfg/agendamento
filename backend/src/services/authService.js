@@ -21,8 +21,14 @@ class AuthService {
     return { token, user };
   }
 
-  async register(name, email, password, phone, role = 'PROFESSIONAL', slugPublicId, planId) {
+  async register(name, email, password, phone, role = 'PROFESSIONAL',) {
     const hashedPassword = await bcrypt.hash(password, 10);
+    // Verifica se o plano existe
+    const plan = await prisma.plan.findFirst({
+      where: {
+        name: 'Agendou Grátis', // Supondo que o nome do plano gratuito seja 'Plano Grátis'
+      },
+    });
     const newUser = await prisma.user.create({
       data: {
         name,
@@ -30,11 +36,24 @@ class AuthService {
         passwordHash: hashedPassword,
         phone: phone,
         role,
-        slugPublicId: slugPublicId || name,
-        planId: planId || '1',
+        slugPublicId: name,
+        planId: plan.id,
       },
     });
-    return newUser;
+    return {
+      id: '',
+      name: newUser.name,
+      email: newUser.email,
+      phone: newUser.phone,
+      role: newUser.role,
+      planId: '',
+      brandName: '', // Campo vazio
+      logoUrl: '', // Campo vazio
+      stripeCustomerId: '', // Campo vazio
+      status: newUser.status,
+      createdAt: newUser.createdAt,
+      updatedAt: newUser.updatedAt,
+    };
   }
 
 }

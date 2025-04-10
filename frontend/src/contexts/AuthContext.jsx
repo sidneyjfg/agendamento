@@ -1,47 +1,44 @@
-import { createContext, useContext, useState } from 'react';
+// frontend/src/contexts/AuthContext.jsx
+import React, { createContext, useContext, useState } from 'react';
+import { login, register } from '../api/authService'; // Importando o serviço de autenticação
 
-const AuthContext = createContext(null);
+const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const login = async (email, password) => {
-    // Simulate API call
-    const mockUser = {
-      id: '1',
-      email,
-      role: email.includes('admin') ? 'ADMIN' : 'PRO',
-      plan: 'FREE'
-    };
-    setUser(mockUser);
-    return mockUser;
+  const handleLogin = async (email, password) => {
+    try {
+      const data = await login(email, password);
+      setUser(data.user);
+      setIsAuthenticated(true);
+      localStorage.setItem('token', data.token); // Armazena o token no localStorage
+    } catch (error) {
+      console.error(error);
+      // Trate o erro conforme necessário
+    }
   };
 
-  const logout = () => {
-    setUser(null);
-  };
-
-  const value = {
-    user,
-    login,
-    logout,
-    isAuthenticated: !!user,
-    isAdmin: user?.role === 'ADMIN',
-    isPro: user?.role === 'PRO',
-    isPremium: user?.plan === 'PREMIUM'
+  const handleRegister = async (userData) => {
+    try {
+      const data = await register(userData);
+      setUser(data.user);
+      setIsAuthenticated(true);
+      localStorage.setItem('token', data.token); // Armazena o token no localStorage
+    } catch (error) {
+      console.error(error);
+      // Trate o erro conforme necessário
+    }
   };
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{ user, isAuthenticated, handleLogin, handleRegister }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
+  return useContext(AuthContext);
 };

@@ -12,10 +12,10 @@ app.use(cors());
 app.use(helmet());
 app.use(express.json());
 
-app.use('/auth', authRoutes);
-app.use('/admin', adminRoutes);
-app.use('/plans', planRoutes); // Usando as rotas de planos
-app.use('/professional', professionalRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/plans', planRoutes); // Usando as rotas de planos
+app.use('/api/professional', professionalRoutes);
 
 
 if (process.env.NODE_ENV !== 'test') {
