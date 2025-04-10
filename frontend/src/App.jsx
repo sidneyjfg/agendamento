@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
+import LandingPage from './pages/LandingPage'; // Importando a nova landing page
 import AdminLayout from './layouts/AdminLayout';
 import ProLayout from './layouts/ProLayout';
 import PublicLayout from './layouts/PublicLayout';
@@ -8,8 +9,8 @@ import AdminUsers from './pages/admin/Users';
 import AdminMessages from './pages/admin/Messages';
 import AdminStatistics from './pages/admin/Statistics';
 import AdminRevenue from './pages/admin/Revenue';
-import ProRegister from './pages/pro/Register';
-import ProLogin from './pages/pro/Login';
+import ProRegister from './pages/Register';
+import ProLogin from './pages/Login';
 import ProDashboard from './pages/pro/Dashboard';
 import ProSettings from './pages/pro/Settings';
 import ProServices from './pages/pro/Services';
@@ -24,6 +25,9 @@ import Subscribe from './pages/Subscribe';
 function App() {
   return (
     <Routes>
+      {/* Landing Page */}
+      <Route path="/" element={<LandingPage />} />
+
       {/* Admin Routes */}
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin" element={
