@@ -1,17 +1,34 @@
 import React, { useState } from 'react';
 import { Scissors, Mail, Lock, User, Building } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext'; // Agora você vai usar o context
 
 function ProLogin() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(null); // Para armazenar mensagens de erro
+  const navigate = useNavigate();
+  const { handleLogin } = useAuth(); // Usando o handleLogin do contexto
 
-  const handleSubmit = () => {
-    e.preventDefault();
-    // Handle login logic here
-    console.log('Login attempt:', { isAdmin, email, password });
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Previne o comportamento padrão do formulário
+
+    // Validação simples
+    if (!email || !password) {
+      setError('Email e senha são obrigatórios.');
+      return;
+    }
+
+    try {
+      // Chama o método handleLogin do AuthContext
+      await handleLogin({ email, password }); // Login agora é gerenciado pelo contexto
+      // Se o login for bem-sucedido, redireciona para a página de dashboard
+      navigate('/pro/dashboard'); // Redireciona para a página de dashboard
+    } catch (error) {
+      setError('Erro ao fazer login. Tente novamente.'); // Define a mensagem de erro
+      console.error('Login error:', error);
+    }
   };
 
   return (
@@ -30,11 +47,10 @@ function ProLogin() {
         {/* Toggle Buttons */}
         <div className="flex border-b">
           <button
-            className={`flex-1 py-4 text-sm font-semibold transition-colors ${
-              !isAdmin
+            className={`flex-1 py-4 text-sm font-semibold transition-colors ${!isAdmin
                 ? 'bg-purple-50 text-purple-600 border-b-2 border-purple-600'
                 : 'text-gray-500 hover:text-purple-600'
-            }`}
+              }`}
             onClick={() => setIsAdmin(false)}
           >
             <div className="flex items-center justify-center">
@@ -43,11 +59,10 @@ function ProLogin() {
             </div>
           </button>
           <button
-            className={`flex-1 py-4 text-sm font-semibold transition-colors ${
-              isAdmin
+            className={`flex-1 py-4 text-sm font-semibold transition-colors ${isAdmin
                 ? 'bg-purple-50 text-purple-600 border-b-2 border-purple-600'
                 : 'text-gray-500 hover:text-purple-600'
-            }`}
+              }`}
             onClick={() => setIsAdmin(true)}
           >
             <div className="flex items-center justify-center">

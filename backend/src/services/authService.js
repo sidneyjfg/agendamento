@@ -11,6 +11,7 @@ class AuthService {
     if (!user) {
       throw new Error('Usuário não encontrado');
     }
+
     const isValid = await bcrypt.compare(password, user.passwordHash);
     if (!isValid) {
       throw new Error('Senha incorreta');
@@ -18,10 +19,25 @@ class AuthService {
 
     // Geração do token JWT com role
     const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '10h' });
-    return { token, user };
+    return {
+      token,
+      user: {
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+        planId: user.planId,
+        brandName: user.brandName,
+        logoUrl: user.logoUrl,
+        stripeCustomerId: user.stripeCustomerId,
+        status: user.status,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt
+      }
+    };
   }
 
-  async register(name, email, password, phone, role = 'PROFESSIONAL',) {
+  async register(name, email, password, phone, role = 'PROFESSIONAL') {
     const hashedPassword = await bcrypt.hash(password, 10);
     // Verifica se o plano existe
     const plan = await prisma.plan.findFirst({

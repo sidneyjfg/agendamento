@@ -45,7 +45,7 @@ function App() {
       <Route path="/register" element={<ProRegister />} />
       <Route path="/login" element={<ProLogin />} />
       <Route path="/pro" element={
-        <ProtectedRoute role="PRO">
+        <ProtectedRoute role="PROFESSIONAL">
           <ProLayout />
         </ProtectedRoute>
       }>
@@ -58,12 +58,13 @@ function App() {
         <Route path="support" element={<ProSupport />} />
       </Route>
 
-      {/* Public Routes */}
       <Route path="/" element={<PublicLayout />}>
+        <Route index element={<LandingPage />} /> {/* Isso renderiza a landing em "/" */}
         <Route path="agendar/:slug" element={<Booking />} />
         <Route path="plans" element={<Plans />} />
         <Route path="subscribe/:planId" element={<Subscribe />} />
       </Route>
+
     </Routes>
   );
 }

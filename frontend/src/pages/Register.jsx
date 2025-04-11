@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Scissors, Mail, Lock, User, Phone } from 'lucide-react';
-import { register } from '../api/authService'; // Importando o serviço de autenticação
+import { useAuth } from '../contexts/AuthContext'; // Importando o AuthContext
 
 function ProRegister() {
   const [formData, setFormData] = useState({
@@ -13,6 +13,7 @@ function ProRegister() {
     confirmPassword: '',
   });
   const [error, setError] = useState(null); // Para armazenar mensagens de erro
+  const { handleRegister } = useAuth(); // Usando o handleLogin do contexto
   const navigate = useNavigate(); // Para redirecionar após o registro
 
   const handleChange = (e) => {
@@ -35,13 +36,13 @@ function ProRegister() {
 
     try {
       // Chama o serviço de registro
-      const response = await register({
+      const response = await handleRegister({
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
         password: formData.password,
       });
-      console.log('data User:', response.user);
+      console.log('data User:', response);
       if (response.status === 201) {
         console.log("Registro bem-sucedido");
         navigate('/login');
