@@ -1,6 +1,6 @@
 const stripeService = require('../services/stripeService');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const { PrismaClient } = require('@prisma/client');
+const { PrismaClient, SubscriptionStatus } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 const FRONTEND_URL = `${process.env.FRONTEND_URL}`;
@@ -40,7 +40,7 @@ class StripeController {
 
         try {
             const session = await stripe.checkout.sessions.retrieve(session_id);
-
+            console.log("handleCheckoutSuccess:", session);
             if (session.payment_status !== 'paid') {
                 return res.status(400).json({ message: 'Pagamento não confirmado' });
             }
@@ -50,7 +50,8 @@ class StripeController {
 
             const stripeSubscription = await stripe.subscriptions.retrieve(subscriptionId);
             const priceId = stripeSubscription.items.data[0].price.id;
-
+            console.log("SubscriptionId", subscriptionId);
+            console.log("stripeSubscription", stripeSubscription);
             // 🔎 Busca o plano correspondente no seu banco
             const plan = await prisma.plan.findFirst({
                 where: { stripePriceId: priceId },
@@ -65,19 +66,19 @@ class StripeController {
 
             // Remove outras assinaturas ativas (opcional)
             await prisma.subscription.updateMany({
-                where: { userId, status: 'ACTIVE' },
-                data: { status: 'CANCELLED' },
+                where: { userId, status: SubscriptionStatus.ACTIVE },
+                data: { status:  SubscriptionStatus.CANCELED },
             });
 
             await prisma.subscription.create({
                 data: {
                     userId,
                     planId: plan.id,
-                    status: 'ACTIVE',
+                    status:  SubscriptionStatus.ACTIVE,
                     stripeSubscriptionId: subscriptionId,
                     paymentMethod: session.payment_method_types[0],
                     startDate: new Date(stripeSubscription.start_date * 1000),
-                    endDate: new Date(stripeSubscription.current_period_end * 1000),
+                    endDate: new Date(new Date(stripeSubscription.start_date * 1000).setMonth(new Date(stripeSubscription.start_date * 1000).getMonth() + 1)),
                 },
             });
 

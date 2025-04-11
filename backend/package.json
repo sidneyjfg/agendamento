@@ -5,6 +5,7 @@
     "test": "jest",
     "seed": "node src/prisma/seed.js",
     "migrate": "prisma migrate dev --schema=src/prisma/schema.prisma",
+    "generate": "prisma generate --schema=src/prisma/schema.prisma",
     "migrate:test": "dotenv -e .env.test -- npx prisma migrate dev --schema=src/prisma/schema.prisma",
     "migrate:reset": "prisma migrate reset --force --schema=src/prisma/schema.prisma",
     "migrate:reset:test": "dotenv -e .env.test -- npx prisma migrate reset --force --schema=src/prisma/schema.prisma",

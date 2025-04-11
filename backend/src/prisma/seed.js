@@ -34,7 +34,7 @@ async function main() {
       allowCustomLink: true,
       allowCustomLogo: true,
       supportPriority: true,
-      stripePriceId: process.env.STRIPE_PREMIUM_PRICE_ID // Certifique-se de que essa variável de ambiente está definida
+      stripePriceId:'price_1R8iVwL66J927w20XBpemn8P'
     }
   });
 

@@ -7,6 +7,9 @@ const adminRoutes = require('./routes/admin');
 const professionalRoutes = require('./routes/professional');
 const planRoutes = require('./routes/plan'); // Importando as rotas de planos
 const stripeRoutes = require('./routes/stripe');
+const stripeWebhookRoutes = require('./routes/stripeWebhook'); // deve vir ANTES de express.json()
+
+
 const app = express();
 app.use(cors());
 app.use(helmet());
@@ -17,6 +20,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/plans', planRoutes); // Usando as rotas de planos
 app.use('/api/stripe', stripeRoutes);
 app.use('/api/professional', professionalRoutes);
+app.use('/api/stripe', stripeWebhookRoutes); // deve vir ANTES de express.json()
 
 
 if (process.env.NODE_ENV !== 'test') {

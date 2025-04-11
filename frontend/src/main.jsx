@@ -5,6 +5,7 @@ import App from './App'
 import { AuthProvider } from './contexts/AuthContext'
 import './index.css'
 
+// Carrega as variáveis de ambiente do arquivo .env
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>

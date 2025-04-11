@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  backend:
+    image: ghcr.io/sidneyjfg/agendou_backend
+    ports:
+      - "3008:3008"
+    restart: always
+    environment:
+      PORT: ${PORT}
+      # 🔐 Conexão com o banco MySQL
+      DATABASE_URL: ${DATABASE_URL}
+      # 🔑 Chave secreta usada para assinar tokens JWT
+      JWT_SECRET: ${JWT_SECRET}
+      # 🌐 URL do frontend (usado para CORS e redirecionamento Stripe)
+      FRONTEND_URL: ${FRONTEND_URL}
+
+      # 💳 Chave secreta da API do Stripe (modo teste ou produção)
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+
+      # 📩 Chave de assinatura para Webhooks do Stripe
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+
+  frontend:
+    image: ghcr.io/sidneyjfg/agendou_frontend
+    ports:
+      - "3009:80"
+    restart: always
+    environment:
+      # URL do backend usada durante o build do frontend
+      VITE_BACKEND_URL: ${VITE_BACKEND_URL}
