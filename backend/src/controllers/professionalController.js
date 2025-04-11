@@ -10,6 +10,7 @@ class ProfessionalController {
       if (!professional) {
         return res.status(404).json({ message: 'Profissional não encontrado' });
       }
+      console.log(professional);
       return res.json(professional);
     } catch (error) {
       console.error('Erro ao obter informações do profissional:', error);

@@ -10,20 +10,6 @@ export const login = async (userData) => {
     throw new Error(error.response?.data?.message || 'Erro ao fazer login'); // Lança um erro com a mensagem apropriada
   }
 };
-export const getCurrentUser = async () => {
-  try {
-    const response = await api.get('/professional/me', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
-    console.log(response.data);
-    return response.data;
-  } catch (error) {
-    console.error('Erro ao buscar usuário autenticado:', error);
-    throw error;
-  }
-};
 // Função para registrar um novo usuário
 export const register = async (userData) => {
   try {

@@ -21,6 +21,8 @@ import ProSupport from './pages/pro/Support';
 import Booking from './pages/client/Booking';
 import Plans from './pages/Plans';
 import Subscribe from './pages/Subscribe';
+import CheckoutSuccess from './pages/CheckoutSuccess';
+import CheckoutCanceled from './pages/CheckoutCanceled';
 
 function App() {
   return (
@@ -57,7 +59,8 @@ function App() {
         <Route path="customers" element={<ProCustomers />} />
         <Route path="support" element={<ProSupport />} />
       </Route>
-
+      <Route path="/sucesso" element={<CheckoutSuccess />} />
+      <Route path="/cancelado" element={<CheckoutCanceled />} />
       <Route path="/" element={<PublicLayout />}>
         <Route index element={<LandingPage />} /> {/* Isso renderiza a landing em "/" */}
         <Route path="agendar/:slug" element={<Booking />} />

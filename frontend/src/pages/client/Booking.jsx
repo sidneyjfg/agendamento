@@ -22,7 +22,6 @@ function Booking() {
       id: 1,
       name: 'Dr. John Doe',
       specialty: 'General Practitioner',
-      bio: 'Experienced doctor with over 10 years of practice.',
       avatar: 'https://via.placeholder.com/150'
     };
     setProfessional(mockProfessional);

@@ -1,31 +1,13 @@
 // frontend/src/contexts/AuthContext.jsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { login, register, getCurrentUser } from '../api/authService';
+import { login, register } from '../api/authService';
+import { getCurrentUser } from '../api/professionalService'
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  // Recupera o usuário com base no token salvo
-  useEffect(() => {
-    const loadUser = async () => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        try {
-          const currentUser = await getCurrentUser();
-          setUser(currentUser);
-          setIsAuthenticated(true);
-        } catch (err) {
-          console.error('Erro ao carregar usuário:', err);
-          logout(); // Remove token inválido
-        }
-      }
-    };
-
-    loadUser();
-  }, []);
 
   const handleLogin = async (credentials) => {
     try {

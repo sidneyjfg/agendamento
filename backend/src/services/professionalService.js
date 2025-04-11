@@ -7,6 +7,28 @@ class ProfessionalService {
   async getProfessionalInfo(id) {
     return await prisma.user.findUnique({
       where: { id },
+      select: {
+        name: true,
+        email: true,
+        phone: true,
+        role: true,
+        brandName: true,
+        logoUrl: true,
+        slugPublicId: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+        plan: {
+          select: {
+            name: true,
+            maxAppointments: true,
+            allowWhatsapp: true,
+            allowCustomLink: true,
+            allowCustomLogo: true,
+            supportPriority: true,
+          }
+        }
+      }
     });
   }
 
