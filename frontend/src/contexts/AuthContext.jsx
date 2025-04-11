@@ -8,14 +8,37 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true); // novo estado para loading
+
+  // Verifica se há um token válido ao iniciar
+  useEffect(() => {
+    const checkToken = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const currentUser = await getCurrentUser();
+          setUser(currentUser);
+          localStorage.setItem('role', currentUser.role);
+          setIsAuthenticated(true);
+        } catch (error) {
+          console.error('Erro ao validar token:', error);
+          localStorage.removeItem('token');
+          localStorage.removeItem('role');
+          setIsAuthenticated(false);
+        }
+      }
+      setLoading(false);
+    };
+
+    checkToken();
+  }, []);
 
   const handleLogin = async (credentials) => {
     try {
       const data = await login(credentials);
       localStorage.setItem('token', data.token);
       localStorage.setItem('role', data.user.role);
-      const currentUser = await getCurrentUser();
-      setUser(currentUser);
+      setUser(data.user);
       setIsAuthenticated(true);
     } catch (error) {
       console.error(error);
@@ -42,7 +65,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, handleLogin, handleRegister, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, loading, handleLogin, handleRegister, logout }}>
       {children}
     </AuthContext.Provider>
   );

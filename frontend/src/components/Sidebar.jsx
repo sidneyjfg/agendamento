@@ -24,7 +24,7 @@ const Sidebar = ({ isAdmin }) => {
 
         {/* Navegação */}
         <nav className="mt-4 px-3 space-y-2">
-          <SidebarItem to={isAdmin ? "/admin" : "/pro/dashboard"} icon={<LayoutDashboard size={18} />} label="Dashboard" />
+          <SidebarItem to={isAdmin ? "/admin/dashboard" : "/pro/dashboard"} icon={<LayoutDashboard size={18} />} label="Dashboard" />
           <SidebarItem to={isAdmin ? "/admin/users" : "/pro/services"} icon={isAdmin ? <Users size={18} /> : <ScissorsSquare size={18} />} label={isAdmin ? "Usuários" : "Serviços"} />
           <SidebarItem to={isAdmin ? "/admin/messages" : "/pro/appointments"} icon={isAdmin ? <MessageSquare size={18} /> : <ClipboardList size={18} />} label={isAdmin ? "Mensagens" : "Agendamentos"} />
           <SidebarItem to={isAdmin ? "/admin/statistics" : "/pro/settings"} icon={isAdmin ? <BarChart2 size={18} /> : <Settings size={18} />} label={isAdmin ? "Estatísticas" : "Configurações"} />

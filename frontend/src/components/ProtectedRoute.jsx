@@ -1,22 +1,23 @@
 // frontend/src/components/ProtectedRoute.jsx
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext'; // Certifique-se de que o caminho está correto
+import { useAuth } from '../contexts/AuthContext';
 
 const ProtectedRoute = ({ children, role }) => {
-  const { user, isAuthenticated } = useAuth(); // Obtendo o usuário e o estado de autenticação
-  console.log(`isAuthenticated ${isAuthenticated}`);
-  console.log("", user);
-  // Verifica se o usuário está autenticado e se a role corresponde
+  const { user, isAuthenticated, loading } = useAuth();
+
+  if (loading) return null; // ou um spinner
+
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
   }
 
-  if (role && user.role !== role) {//
-    return <Navigate to="/" />; // Redireciona para a landing page se a role não corresponder
+  if (role && user?.role?.toUpperCase() !== role.toUpperCase()) {
+    return <Navigate to="/" />;
   }
+  
 
-  return children; // Retorna os filhos se a autenticação e a role estiverem corretas
+  return children;
 };
 
 export default ProtectedRoute;

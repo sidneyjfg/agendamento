@@ -4,8 +4,8 @@ import AdminLayout from './layouts/AdminLayout';
 import ProLayout from './layouts/ProLayout';
 import PublicLayout from './layouts/PublicLayout';
 import ProtectedRoute from './components/ProtectedRoute';
-import AdminLogin from './pages/admin/Login';
 import AdminUsers from './pages/admin/Users';
+import AdminDashboard from './pages/admin/Dashboard';
 import AdminMessages from './pages/admin/Messages';
 import AdminStatistics from './pages/admin/Statistics';
 import AdminRevenue from './pages/admin/Revenue';
@@ -27,16 +27,14 @@ import CheckoutCanceled from './pages/CheckoutCanceled';
 function App() {
   return (
     <Routes>
-      {/* Landing Page */}
-      <Route path="/" element={<LandingPage />} />
 
       {/* Admin Routes */}
-      <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin" element={
         <ProtectedRoute role="ADMIN">
           <AdminLayout />
         </ProtectedRoute>
       }>
+        <Route path="dashboard" element={<AdminDashboard />} />
         <Route path="users" element={<AdminUsers />} />
         <Route path="messages" element={<AdminMessages />} />
         <Route path="statistics" element={<AdminStatistics />} />

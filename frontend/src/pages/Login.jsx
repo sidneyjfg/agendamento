@@ -23,8 +23,16 @@ function ProLogin() {
     try {
       // Chama o método handleLogin do AuthContext
       await handleLogin({ email, password }); // Login agora é gerenciado pelo contexto
-      // Se o login for bem-sucedido, redireciona para a página de dashboard
-      navigate('/pro/dashboard'); // Redireciona para a página de dashboard
+
+      // Obtenha a role do usuário do localStorage
+      const role = localStorage.getItem('role');
+
+      // Redireciona com base no tipo de usuário
+      if (role === 'ADMIN') {
+        navigate('/admin/dashboard'); // Redireciona para o painel de administração
+      } else {
+        navigate('/pro/dashboard'); // Redireciona para a página de dashboard do cliente
+      }
     } catch (error) {
       setError('Erro ao fazer login. Tente novamente.'); // Define a mensagem de erro
       console.error('Login error:', error);
@@ -48,8 +56,8 @@ function ProLogin() {
         <div className="flex border-b">
           <button
             className={`flex-1 py-4 text-sm font-semibold transition-colors ${!isAdmin
-                ? 'bg-purple-50 text-purple-600 border-b-2 border-purple-600'
-                : 'text-gray-500 hover:text-purple-600'
+              ? 'bg-purple-50 text-purple-600 border-b-2 border-purple-600'
+              : 'text-gray-500 hover:text-purple-600'
               }`}
             onClick={() => setIsAdmin(false)}
           >
@@ -60,8 +68,8 @@ function ProLogin() {
           </button>
           <button
             className={`flex-1 py-4 text-sm font-semibold transition-colors ${isAdmin
-                ? 'bg-purple-50 text-purple-600 border-b-2 border-purple-600'
-                : 'text-gray-500 hover:text-purple-600'
+              ? 'bg-purple-50 text-purple-600 border-b-2 border-purple-600'
+              : 'text-gray-500 hover:text-purple-600'
               }`}
             onClick={() => setIsAdmin(true)}
           >
